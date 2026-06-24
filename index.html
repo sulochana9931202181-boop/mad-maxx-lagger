@@ -3,114 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>𝐌𝐀𝐃 𝐌𝐀𝐗𝐗 ULTIMATE LAGGER</title>
+    <title>𝐌𝐀𝐃 𝐌𝐀𝐗𝐗 DEVICE CRASHER</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; }
         body {
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             background: #000;
             overflow: hidden;
             font-family: 'Courier New', monospace;
         }
-
-        canvas {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 100px;
-            font-weight: 900;
-            color: #00ff00;
-            text-shadow: 0 0 20px #00ff00, 0 0 40px #ff00ff;
-            animation: glitch 0.1s infinite;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            50% { transform: translate(-2px, 2px); }
-            100% { transform: translate(0); }
-        }
-
-        .subtitle {
-            font-size: 50px;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff;
-        }
-
-        .counter {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: #00ff00;
-            font-size: 14px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.9);
+        canvas { display: block; }
+        #stats {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #0f0;
+            font-size: 12px;
+            z-index: 999;
+            background: rgba(0,0,0,0.8);
             padding: 10px;
-            border: 2px solid #00ff00;
+            border: 1px solid #0f0;
+        }
+        #title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0f0;
+            font-size: 60px;
+            font-weight: bold;
+            text-shadow: 0 0 20px #0f0, 0 0 40px #f0f;
+            z-index: 10;
+            animation: pulse 0.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; text-shadow: 0 0 20px #0f0, 0 0 40px #f0f; }
+            50% { opacity: 0.5; text-shadow: 0 0 40px #0f0, 0 0 80px #f0f; }
         }
     </style>
 </head>
 <body>
-    <div class="counter">
-        WORDS/MS: <span id="wpm">0</span><br>
-        PARTICLES: <span id="pc">0</span><br>
-        FPS: <span id="fps">60</span>
+    <div id="stats">
+        FPS: <span id="fps">60</span><br>
+        PARTICLES: <span id="particles">0</span><br>
+        TRIANGLES: <span id="triangles">0</span><br>
+        LINES: <span id="lines">0</span><br>
+        TEXT: <span id="text">0</span>M
     </div>
-    
-    <div class="container">
-        <div class="title">𝐌𝐀𝐃 𝐌𝐀𝐗𝐗</div>
-        <div class="subtitle">LAGGER</div>
-    </div>
+    <div id="title">𝐌𝐀𝐃 𝐌𝐀𝐗𝐗</div>
+    <canvas id="canvas"></canvas>
 
     <script>
-        const canvas = document.createElement('canvas');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        document.body.appendChild(canvas);
-        const ctx = canvas.getContext('2d');
 
         let particles = [];
         let frameCount = 0;
         let lastTime = Date.now();
-        let wordsPerMs = 0;
-        let totalWords = 0;
+        let totalText = 0;
 
-        const words = ['MAD', 'MAXX', 'LAG', 'CRASH', '∞', '█', '💥', '🔥'];
+        const words = ['MAD', 'MAXX', 'LAG', 'CRASH', 'DOOM', 'ERROR', 'BOMB', 'CHAOS', '∞', '█', '▓', '▒', '░', '◆', '◇', '●', '○'];
 
+        // MASSIVE TEXT RAIN
+        function drawTextRain() {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            for (let t = 0; t < 50000; t++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 30 + 5;
+                const text = words[Math.floor(Math.random() * words.length)];
+                
+                ctx.save();
+                ctx.globalAlpha = Math.random() * 0.7;
+                ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                ctx.font = `bold ${size}px monospace`;
+                ctx.fillText(text, x, y);
+                ctx.restore();
+                
+                totalText++;
+            }
+        }
+
+        // PARTICLE CLASS
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 10;
-                this.vy = (Math.random() - 0.5) * 10;
-                this.size = Math.random() * 4 + 0.5;
+                this.vx = (Math.random() - 0.5) * 20;
+                this.vy = (Math.random() - 0.5) * 20;
+                this.size = Math.random() * 8 + 1;
                 this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * 5 + 1;
             }
 
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                this.vy += 0.2;
+                this.vx += (Math.random() - 0.5) * 0.5;
+                this.vy += (Math.random() - 0.5) * 0.5;
+                
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -0.8;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                
                 this.x = Math.max(0, Math.min(canvas.width, this.x));
                 this.y = Math.max(0, Math.min(canvas.height, this.y));
             }
@@ -123,105 +123,126 @@
             }
         }
 
-        // Initialize with 50k particles
-        for (let i = 0; i < 50000; i++) {
+        // Initialize particles
+        for (let i = 0; i < 100000; i++) {
             particles.push(new Particle());
         }
 
-        function animate() {
-            frameCount++;
-            const now = Date.now();
-
-            if (now - lastTime >= 1000) {
-                document.getElementById('fps').textContent = frameCount;
-                frameCount = 0;
-                lastTime = now;
+        // TRIANGLE GENERATOR
+        function generateTriangles() {
+            for (let i = 0; i < 5000; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 100 + 20;
+                const rotation = Math.random() * Math.PI * 2;
+                
+                ctx.save();
+                ctx.globalAlpha = Math.random() * 0.5;
+                ctx.strokeStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                ctx.lineWidth = Math.random() * 3;
+                ctx.translate(x, y);
+                ctx.rotate(rotation);
+                
+                ctx.beginPath();
+                ctx.moveTo(0, -size);
+                ctx.lineTo(size, size);
+                ctx.lineTo(-size, size);
+                ctx.closePath();
+                ctx.stroke();
+                
+                ctx.restore();
             }
+        }
 
-            // Clear canvas
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Update and draw particles
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-
-            // Draw massive connecting lines
-            for (let i = 0; i < 2000; i++) {
+        // MASSIVE LINE NETWORK
+        function drawLines() {
+            for (let i = 0; i < 3000; i++) {
                 const p1 = particles[Math.floor(Math.random() * particles.length)];
                 const p2 = particles[Math.floor(Math.random() * particles.length)];
+                
                 const dx = p1.x - p2.x;
                 const dy = p1.y - p2.y;
                 const d = Math.sqrt(dx * dx + dy * dy);
-                if (d < 100) {
-                    ctx.strokeStyle = `rgba(0, 255, 100, ${0.5 * (1 - d / 100)})`;
+                
+                if (d < 150) {
+                    ctx.strokeStyle = `rgba(0, 255, 100, ${0.6 * (1 - d / 150)})`;
+                    ctx.lineWidth = 2;
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.lineTo(p2.x, p2.y);
                     ctx.stroke();
                 }
             }
+        }
 
-            // GENERATE MASSIVE WORDS ON CANVAS
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-            
-            for (let w = 0; w < 5000; w++) {
-                const word = words[Math.floor(Math.random() * words.length)];
-                const num = Math.floor(Math.random() * 999999999999);
-                
-                ctx.globalAlpha = Math.random() * 0.5;
-                ctx.font = `${Math.random() * 20 + 8}px monospace`;
-                ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                ctx.fillText(word, 
-                    cx + (Math.random() - 0.5) * 400,
-                    cy + (Math.random() - 0.5) * 400);
-                ctx.fillText(num,
-                    cx + (Math.random() - 0.5) * 400,
-                    cy + (Math.random() - 0.5) * 400);
-                
-                totalWords += 2;
+        let frameCounter = 0;
+
+        function animate() {
+            frameCounter++;
+
+            // FPS Counter
+            const now = Date.now();
+            if (now - lastTime >= 1000) {
+                document.getElementById('fps').textContent = frameCounter;
+                frameCounter = 0;
+                lastTime = now;
             }
 
-            ctx.globalAlpha = 1;
+            // Clear with motion blur
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Add new particles constantly
-            for (let i = 0; i < 300; i++) {
+            // Update and draw particles
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+
+            // Draw lines
+            drawLines();
+
+            // Generate triangles
+            generateTriangles();
+
+            // Draw massive text rain
+            drawTextRain();
+
+            // Add new particles
+            for (let i = 0; i < 1000; i++) {
                 particles.push(new Particle());
+                if (particles.length > 300000) {
+                    particles.shift();
+                }
             }
 
-            // Keep particle count reasonable
-            if (particles.length > 200000) {
-                particles = particles.slice(-100000);
-            }
+            // Update stats
+            document.getElementById('particles').textContent = particles.length;
+            document.getElementById('triangles').textContent = '5K';
+            document.getElementById('lines').textContent = '3K';
+            document.getElementById('text').textContent = Math.floor(totalText / 1000000);
 
-            wordsPerMs = Math.floor(totalWords / Math.max(1, now - (lastTime - 1000)));
-            document.getElementById('wpm').textContent = Math.floor(wordsPerMs / 1000) + 'M';
-            document.getElementById('pc').textContent = particles.length;
-
-            // Console spam
-            for (let s = 0; s < 10; s++) {
-                console.log(`🔥 MADMAXX - WORDS: ${totalWords} | FPS: ${frameCount}`);
+            // AGGRESSIVE CONSOLE SPAM
+            for (let i = 0; i < 50; i++) {
+                console.log(`🔥 MADMAXX CRASHER - Frame: ${frameCounter} | Particles: ${particles.length} | Text: ${totalText}M`);
             }
 
             requestAnimationFrame(animate);
         }
 
+        animate();
+
+        // CONTINUOUS CONSOLE BOMBING
+        setInterval(() => {
+            for (let i = 0; i < 500; i++) {
+                console.log(`💥 SYSTEM OVERLOAD - ${Math.random() * 1000000} OPERATIONS/SECOND 💥`);
+            }
+        }, 1);
+
+        // Handle resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-
-        animate();
-
-        // SPAM CONSOLE EVERY MILLISECOND
-        setInterval(() => {
-            for (let i = 0; i < 100; i++) {
-                console.log(`💥 ULTIMATE LAG - ${Math.floor(Math.random() * 1000000)} OPS/MS`);
-            }
-        }, 1);
     </script>
 </body>
 </html>
